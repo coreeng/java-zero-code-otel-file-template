@@ -6,9 +6,9 @@ This guide helps you set up and run a local OpenTelemetry reference app with min
 
 Before you begin, make sure you have the following installed and set up on your machine:
 
-- Docker/Podman: The OpenTelemetry Collector runs in a OCI container, so you'll need Docker installed on your system. Install Docker if you don't have it yet.
+- Docker/Podman: The OpenTelemetry Collector runs in a OCI container, so you'll need Docker installed on your system. [Install Docker](https://docs.docker.com/engine/install/) if you don't have it yet.
 
-- Java (JDK 11 or later): You'll need Java installed to build and run the application. The app is built with Gradle, so ensure that Java is properly configured. Install Java (JDK 11 or later).
+- Java (JDK 11 or later): You'll need Java installed to build and run the application. The app is built with Gradle, so ensure that Java is properly configured. [Install Java](https://www.openlogic.com/openjdk-downloads) (JDK 11 or later).
 
 ## Steps to Run
 
@@ -34,13 +34,13 @@ This command does the following:
 
 Next, build the Java application and run it with OpenTelemetry support:
 
-Build the app:
+#### Build the app:
 
 ```sh
 ./gradlew bootJar
 ```
 
-Run the app with OpenTelemetry:
+#### Run the app with OpenTelemetry:
 
 ```sh
 JAVA_TOOL_OPTIONS=-javaagent:opentelemetry-javaagent.jar
