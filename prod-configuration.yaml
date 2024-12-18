@@ -1,0 +1,133 @@
+receivers:
+  otlp:
+    protocols:
+      grpc:
+        endpoint: "0.0.0.0:4317"
+      http:
+        endpoint: "0.0.0.0:4318"
+processors:
+  memory_limiter:
+    check_interval: 1s
+    limit_percentage: 50
+    spike_limit_percentage: 30
+  resource/mandatory-labels:
+    attributes:
+      - key: tenant
+        action: insert
+        value: ${env:TENANT}
+      - key: spark_group
+        action: insert
+        value: ${env:SPARK_GROUP}
+      - key: service
+        action: insert
+        value: ${env:SERVICE}
+  resource/remove-high-cardinality:
+    attributes:
+      - key: container.id
+        action: delete
+      - key: host.name
+        action: delete
+      - key: host.arch
+        action: delete
+      - key: instance
+        action: delete
+      - key: job
+        action: delete
+      - key: os.description
+        action: delete
+      - key: os.type
+        action: delete
+      - key: process.command_args
+        action: delete
+      - key: process.executable.path
+        action: delete
+      - key: process.pid
+        action: delete
+      - key: process.runtime.description
+        action: delete
+      - key: process.runtime.name
+        action: delete
+      - key: process.runtime.version
+        action: delete
+      - key: service.instance.id
+        action: delete
+      - key: telemetry.distro.name
+        action: delete
+      - key: telemetry.distro.version
+        action: delete
+      - key: telemetry.sdk.language
+        action: delete
+      - key: telemetry.sdk.name
+        action: delete
+      - key: telemetry.sdk.version
+        action: delete
+  filter:
+    traces:
+      spanevent:
+        - 'attributes["*.ip*"] == true'
+  batch:
+    timeout: 30s
+extensions:
+  basicauth/otlp:
+    client_auth:
+      username: ${env:OTLP_USER}
+      password: ${env:GRAFANA_TOKEN}
+  basicauth/mimir:
+    client_auth:
+      username: ${env:MIMIR_USER}
+      password: ${env:GRAFANA_TOKEN}
+exporters:
+  debug:
+    verbosity: detailed
+  otlphttp/auth:
+    endpoint: ${env:OTLP_HTTP_PUSH_ENDPOINT}
+    auth:
+      authenticator: basicauth/otlp
+  otlphttp/local:
+    endpoint: ${env:OTLP_HTTP_PUSH_ENDPOINT}
+    tls:
+      insecure: true
+  prometheusremotewrite:
+    endpoint: ${env:MIMIR_PUSH_ENDPOINT}
+    resource_to_telemetry_conversion:
+      enabled: true
+    target_info:
+      enabled: false
+    external_labels:
+      tenant: ${env:TENANT}
+      spark_group: ${env:SPARK_GROUP}
+      service: ${env:SERVICE}
+    auth:
+      authenticator: basicauth/mimir
+service:
+  extensions: [basicauth/otlp, basicauth/mimir]
+  pipelines:
+    traces:
+      receivers: [otlp]
+      processors:
+        - memory_limiter
+        - resource/mandatory-labels
+        - resource/remove-high-cardinality
+        - filter
+        - batch
+      exporters: [otlphttp/auth]
+    metrics:
+      receivers: [ otlp ]
+      processors:
+        - memory_limiter
+        - resource/mandatory-labels
+        - resource/remove-high-cardinality
+        - filter
+        - batch
+      exporters: [prometheusremotewrite, debug]
+    logs:
+      receivers: [ otlp ]
+      processors:
+        - memory_limiter
+        - resource/mandatory-labels
+        - resource/remove-high-cardinality
+        - filter
+        - batch
+      exporters: [ otlphttp/auth ]
+  telemetry:
+
