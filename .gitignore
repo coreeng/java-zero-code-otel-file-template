@@ -37,3 +37,7 @@ out/
 
 ### Output files ###
 logs.json
+*.zip
+
+### Secret files ###
+.envrc

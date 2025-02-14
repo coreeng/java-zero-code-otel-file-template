@@ -16,13 +16,27 @@ Before you begin, make sure you have the following installed and set up on your 
 The OpenTelemetry Collector is responsible for collecting and processing telemetry data (like traces and metrics). To start the collector, run this command:
 
 ```sh
+touch logs.json
+docker network create shared
 docker run -it \
-  -p 0.0.0.0:4317:4317 \
-  -p 0.0.0.0:4318:4318 \
-  -p 0.0.0.0:55679:55679 \
+  --net shared \
+  -p 4317:4317 \
+  -p 4318:4318 \
+  -p 55679:55679 \
   -v ./:/app \
-  docker.io/otel/opentelemetry-collector-contrib:0.115.1 \
+  docker.io/otel/opentelemetry-collector-contrib:0.119.0 \
   --config /app/example-configuration.yaml
+```
+
+```sh
+docker run -it \
+  --net shared \
+  -p 9200:9200 \
+  -p 9600:9600 \
+  -e "discovery.type=single-node" \
+  -e "OPENSEARCH_INITIAL_ADMIN_PASSWORD=5m2-meG04e70m-wdf99s-dhnm" \
+  --name opensearch \
+  docker.io/opensearchproject/opensearch:latest
 ```
 
 This command does the following:
