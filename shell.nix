@@ -2,5 +2,6 @@
 pkgs.mkShell {
   buildInputs = [
     pkgs.openjdk17-bootstrap
+    pkgs.grafana-alloy
   ];
 }

@@ -30,7 +30,7 @@ docker run -it \
 
 ```sh
 docker run -it \
-  --net shared \
+  --net host \
   -p 9200:9200 \
   -p 9600:9600 \
   -e "discovery.type=single-node" \
@@ -82,3 +82,11 @@ tail -f logs.json
 This will display the log output in real-time as the app runs.
 
 By following these steps, you'll have the OpenTelemetry Collector running, your Java app instrumented with OpenTelemetry, and be able to observe telemetry data in the logs.
+
+### Alloy
+
+Run with alloy
+
+```sh
+alloy run --stability.level experimental config.alloy
+```

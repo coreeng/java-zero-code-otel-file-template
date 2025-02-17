@@ -38,6 +38,10 @@ out/
 ### Output files ###
 logs.json
 *.zip
+data-alloy/
 
 ### Secret files ###
 .envrc
+
+### Alloy ###
+alloy
