@@ -12,13 +12,13 @@ processors:
     spike_limit_percentage: 30
   resource/mandatory-labels:
     attributes:
-      - key: tenant
+      - key: company.tenant
         action: insert
         value: test
-      - key: spark_group
+      - key: company.spark_group
         action: insert
         value: test
-      - key: service
+      - key: company.service
         action: insert
         value: test
   resource/remove-high-cardinality:
@@ -63,8 +63,13 @@ processors:
         action: delete
   batch:
     timeout: 5s
+extensions:
+  basicauth/client:
+    client_auth:
+      username: admin
+      password: 5m2-meG04e70m-wdf99s-dhnm
 service:
-  extensions: []
+  extensions: [ "basicauth/client" ]
   pipelines:
     traces:
       receivers: [ otlp ]
@@ -79,14 +84,21 @@ service:
         - resource/mandatory-labels
         - resource/remove-high-cardinality
         - batch
-      exporters:  [ file ]
+      exporters: [ file ]
     logs:
       receivers: [ otlp ]
       processors:
-        - resource/mandatory-labels
-        - resource/remove-high-cardinality
-        - batch
-      exporters: [ file ]
+      - resource/mandatory-labels
+      - resource/remove-high-cardinality
+      exporters: [ opensearch ]
 exporters:
   file:
     path: ./app/logs.json
+  opensearch:
+    http:
+      endpoint: "https://opensearch:9200"
+      auth:
+          authenticator: "basicauth/client"
+      tls:
+        insecure: false
+        insecure_skip_verify: true
