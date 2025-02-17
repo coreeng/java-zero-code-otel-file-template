@@ -16,7 +16,6 @@ Before you begin, make sure you have the following installed and set up on your 
 The OpenTelemetry Collector is responsible for collecting and processing telemetry data (like traces and metrics). To start the collector, run this command:
 
 ```sh
-touch logs.json
 docker network create shared
 docker run -it \
   --net shared \

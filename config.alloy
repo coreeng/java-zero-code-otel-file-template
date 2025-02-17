@@ -1,151 +1,177 @@
 otelcol.auth.basic "default_client" {
-  username = "admin"
-  password = "5m2-meG04e70m-wdf99s-dhnm"
+	username = sys.env("OPENSEARCH_USERNAME")
+	password = sys.env("OPENSEARCH_INITIAL_ADMIN_PASSWORD")
 }
 
 otelcol.receiver.otlp "reciever" {
-  grpc {
-    endpoint = "0.0.0.0:4317"
-  }
-  http {
-    endpoint = "0.0.0.0:4318"
-  }
-  output {
-    metrics = [otelcol.processor.attributes.mandatory_labels.input]
-    logs    = [otelcol.processor.attributes.mandatory_labels.input]
-    traces  = [otelcol.processor.attributes.mandatory_labels.input]
-  }
+	grpc {
+		endpoint = "0.0.0.0:4317"
+	}
+
+	http {
+		endpoint = "0.0.0.0:4318"
+	}
+
+	output {
+		metrics = [otelcol.processor.attributes.mandatory_labels.input]
+		logs    = [otelcol.processor.attributes.mandatory_labels.input]
+		traces  = [otelcol.processor.attributes.mandatory_labels.input]
+	}
 }
 
 otelcol.processor.attributes "mandatory_labels" {
-  action {
-    key = "company.tenant"
-    action = "insert"
-    value = "test"
-  }
-  action {
-    key = "company.spark_group"
-    action = "insert"
-    value = "test"
-  }
-  action {
-    key = "company.service"
-    action = "insert"
-    value = "test"
-  }
-  action {
-    key = "host.arch"
-    action = "delete"
-  }
-  action {
-    key = "container.id"
-    action=  "delete"
-  }
-  action {
-    key = "host.name"
-    action=  "delete"
-  }
-  action {
-    key = "host.arch"
-    action=  "delete"
-  }
-  action {
-    key = "instance"
-    action=  "delete"
-  }
-  action {
-    key = "job"
-    action=  "delete"
-  }
-  action {
-    key = "os.description"
-    action=  "delete"
-  }
-  action {
-    key = "os.type"
-    action=  "delete"
-  }
-  action {
-    key = "process.command_args"
-    action=  "delete"
-  }
-  action {
-    key = "process.executable.path"
-    action=  "delete"
-  }
-  action {
-    key = "process.pid"
-    action=  "delete"
-  }
-  action {
-    key = "process.runtime.description"
-    action=  "delete"
-  }
-  action {
-    key = "process.runtime.name"
-    action=  "delete"
-  }
-  action {
-    key = "process.runtime.version"
-    action=  "delete"
-  }
-  action {
-    key = "service.instance.id"
-    action=  "delete"
-  }
-  action {
-    key = "telemetry.distro.name"
-    action=  "delete"
-  }
-  action {
-    key = "telemetry.distro.version"
-    action=  "delete"
-  }
-  action {
-    key = "telemetry.sdk.language"
-    action=  "delete"
-  }
-  action {
-    key = "telemetry.sdk.name"
-    action=  "delete"
-  }
-  action {
-    key = "telemetry.sdk.version"
-    action=  "delete"
-  }
+	action {
+		key    = "company.tenant"
+		action = "insert"
+		value  = "test"
+	}
 
-  output {
-    metrics = [otelcol.exporter.debug.print.input]
-    logs    = [otelcol.processor.batch.default.input]
-    traces  = [otelcol.processor.batch.default.input]
-  }
+	action {
+		key    = "company.spark_group"
+		action = "insert"
+		value  = "test"
+	}
+
+	action {
+		key    = "company.service"
+		action = "insert"
+		value  = "test"
+	}
+
+	action {
+		key    = "host.arch"
+		action = "delete"
+	}
+
+	action {
+		key    = "container.id"
+		action = "delete"
+	}
+
+	action {
+		key    = "host.name"
+		action = "delete"
+	}
+
+	action {
+		key    = "host.arch"
+		action = "delete"
+	}
+
+	action {
+		key    = "instance"
+		action = "delete"
+	}
+
+	action {
+		key    = "job"
+		action = "delete"
+	}
+
+	action {
+		key    = "os.description"
+		action = "delete"
+	}
+
+	action {
+		key    = "os.type"
+		action = "delete"
+	}
+
+	action {
+		key    = "process.command_args"
+		action = "delete"
+	}
+
+	action {
+		key    = "process.executable.path"
+		action = "delete"
+	}
+
+	action {
+		key    = "process.pid"
+		action = "delete"
+	}
+
+	action {
+		key    = "process.runtime.description"
+		action = "delete"
+	}
+
+	action {
+		key    = "process.runtime.name"
+		action = "delete"
+	}
+
+	action {
+		key    = "process.runtime.version"
+		action = "delete"
+	}
+
+	action {
+		key    = "service.instance.id"
+		action = "delete"
+	}
+
+	action {
+		key    = "telemetry.distro.name"
+		action = "delete"
+	}
+
+	action {
+		key    = "telemetry.distro.version"
+		action = "delete"
+	}
+
+	action {
+		key    = "telemetry.sdk.language"
+		action = "delete"
+	}
+
+	action {
+		key    = "telemetry.sdk.name"
+		action = "delete"
+	}
+
+	action {
+		key    = "telemetry.sdk.version"
+		action = "delete"
+	}
+
+	output {
+		metrics = [otelcol.exporter.debug.print.input]
+		logs    = [otelcol.processor.batch.default.input]
+		traces  = [otelcol.processor.batch.default.input]
+	}
 }
 
 otelcol.processor.batch "default" {
-  timeout = "5s"
+	timeout = "5s"
 
-  output {
-    metrics = [otelcol.exporter.debug.print.input]
-    logs    = [otelcol.exporter.otlphttp.opensearch.input]
-    traces  = [otelcol.exporter.otlphttp.opensearch.input]
-  }
+	output {
+		metrics = [otelcol.exporter.debug.print.input]
+		logs    = [otelcol.exporter.otlphttp.opensearch.input]
+		traces  = [otelcol.exporter.otlphttp.opensearch.input]
+	}
 }
 
 otelcol.exporter.debug "print" {
-  verbosity = "Detailed"
+	verbosity = "Detailed"
 }
 
 otelcol.exporter.otlphttp "opensearch" {
-  encoding = "json"
-  traces_endpoint = "https://0.0.0.0:9200/traces/_doc"
-  logs_endpoint = "https://0.0.0.0:9200/logs/_doc"
-  client {
-    endpoint = "https://0.0.0.0:9200"
-    auth = otelcol.auth.basic.default_client.handler
-    compression = "gzip"
-    tls {
-        insecure             = false
-        insecure_skip_verify = true
-    }
-  }
+	encoding        = "json"
+	traces_endpoint = sys.env("OPENSEARCH_URI") + "/traces/_doc"
+	logs_endpoint   = sys.env("OPENSEARCH_URI") + "/logs/_doc"
+
+	client {
+		endpoint    = sys.env("OPENSEARCH_URI")
+		auth        = otelcol.auth.basic.default_client.handler
+		compression = "gzip"
+
+		tls {
+			insecure             = false
+			insecure_skip_verify = true
+		}
+	}
 }
