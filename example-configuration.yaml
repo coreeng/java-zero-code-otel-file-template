@@ -68,8 +68,10 @@ extensions:
     client_auth:
       username: admin
       password: 5m2-meG04e70m-wdf99s-dhnm
+  zpages:
+    endpoint: 0.0.0.0:55679
 service:
-  extensions: [ "basicauth/client" ]
+  extensions: [ "basicauth/client", zpages ]
   pipelines:
     traces:
       receivers: [ otlp ]
@@ -77,7 +79,7 @@ service:
         - resource/mandatory-labels
         - resource/remove-high-cardinality
         - batch
-      exporters: [ file ]
+      exporters: [ opensearch ]
     metrics:
       receivers: [ otlp ]
       processors:
@@ -90,10 +92,13 @@ service:
       processors:
       - resource/mandatory-labels
       - resource/remove-high-cardinality
-      exporters: [ opensearch ]
+      - batch
+      exporters: [ opensearch, loki ]
 exporters:
   file:
-    path: ./app/logs.json
+    path: ./app/metrics.json
+  loki:
+    endpoint: "http://loki:3100/loki/api/v1/push"
   opensearch:
     http:
       endpoint: "https://opensearch:9200"

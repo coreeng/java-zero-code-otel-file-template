@@ -150,7 +150,10 @@ otelcol.processor.batch "default" {
 
 	output {
 		metrics = [otelcol.exporter.debug.print.input]
-		logs    = [otelcol.exporter.otlphttp.opensearch.input]
+		logs    = [
+			otelcol.exporter.otlphttp.opensearch.input,
+			otelcol.exporter.otlphttp.loki.input,
+		]
 		traces  = [otelcol.exporter.otlphttp.opensearch.input]
 	}
 }
@@ -173,5 +176,12 @@ otelcol.exporter.otlphttp "opensearch" {
 			insecure             = false
 			insecure_skip_verify = true
 		}
+	}
+}
+
+otelcol.exporter.otlphttp "loki" {
+	logs_endpoint   = sys.env("LOKI_URI") + "/otlp/v1/logs"
+	client {
+		endpoint = sys.env("LOKI_URI")
 	}
 }
