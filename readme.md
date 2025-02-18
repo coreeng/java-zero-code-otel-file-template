@@ -10,6 +10,36 @@ Before you begin, make sure you have the following installed and set up on your 
 
 - Java (JDK 11 or later): You'll need Java installed to build and run the application. The app is built with Gradle, so ensure that Java is properly configured. [Install Java](https://www.openlogic.com/openjdk-downloads) (JDK 11 or later).
 
+- Make: Make should come on all macos/linux machines [make](https://www.gnu.org/software/make/)
+
+## Get started with make
+
+The simpliest way to get started once the above dependencies have been installed.
+
+
+### Alloy
+
+```sh
+make demo-alloy
+```
+
+![alloy_demo](docs/alloy.png)
+
+### OTel Contrib Collector
+
+```sh
+make demo-otel
+```
+
+![demo_otel](docs/otel.png)
+
+
+#### Make some requests
+
+```sh
+make request
+```
+
 ## Steps to Run
 
 ### Start the OpenTelemetry Collector
@@ -17,7 +47,7 @@ The OpenTelemetry Collector is responsible for collecting and processing telemet
 
 ```sh
 docker network create shared
-docker run -it \
+docker run -d \
   --net shared \
   -p 4317:4317 \
   -p 4318:4318 \
@@ -26,6 +56,8 @@ docker run -it \
   docker.io/otel/opentelemetry-collector-contrib:0.119.0 \
   --config /app/example-configuration.yaml
 ```
+
+### Alternatively: Start alloy
 
 ```sh
 docker run -it \
@@ -37,11 +69,6 @@ docker run -it \
   --name opensearch \
   docker.io/opensearchproject/opensearch:latest
 ```
-
-This command does the following:
-- Runs the OpenTelemetry Collector in a Docker container.
-- Opens necessary ports for communication.
-- Mounts the current directory (./) into the container to access the configuration file (example-configuration.yaml).
 
 ### Build and Run the Java Application
 
@@ -71,11 +98,32 @@ curl http://localhost:8080/rolldice
 
 This will trigger the app to roll a dice and generate telemetry data.
 
-### Check the Logs
+### Check Grafana
+
+#### Start Grafana
+
+```sh
+	docker network create shared || true
+	docker run -d --rm \
+		--net shared \
+		--name=grafana -p 3000:3000 \
+		docker.io/grafana/grafana:main
+```
+
+#### Browse Grafana
+
+[http://localhost:3000/](http://localhost:3000/)
+
+Defaults to:
+User: admin
+Password: admin
+
+
+### Check the Metrics
 You can view the app's output logs by running:
 
 ```sh
-tail -f logs.json
+tail -f metrics.json
 ```
 
 This will display the log output in real-time as the app runs.

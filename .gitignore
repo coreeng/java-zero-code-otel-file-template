@@ -36,7 +36,7 @@ out/
 .vscode/
 
 ### Output files ###
-logs.json
+metrics.json
 *.zip
 data-alloy/
 
